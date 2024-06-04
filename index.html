@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XP Button</title>
+<link rel="shortcut icon" href="tarefas2.png" type="image/x-icon">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #dddddd;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    position: relative;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#xp-container {
+    font-size: 25px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, rgb(190, 20, 247), #00E3CC, #32A89C, #009688, #44E3D3, rgb(178, 8, 235));
+    background-size: 400% 100%;
+    animation: degrade 5s linear infinite alternate;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes degrade {
+    0% {
+        background-position-x: 0%;
+    }
+    100% {
+        background-position: 400%;
+    }
+}
+
+#xpImage {
+    display: block;
+    margin: 0 auto 20px auto; /* Centraliza a imagem e adiciona espaço abaixo */
+    width: 100px;
+    height: auto;
+    z-index: 1;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+#xpRange {
+    margin-top: 10px;
+}
+
+#xpRangeValue {
+    margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gestão de XP</h1> <!-- Novo elemento h1 adicionado -->
+    <img id="xpImage" src="https://cdn-icons-png.flaticon.com/512/6742/6742656.png" alt="Ícone de XP">
+    <h2 id="xp-container">XP: <span id="xp">0</span></h2>
+    <br>
+    <button onclick="addXP(100)">Tarefa concluída</button>
+    <button onclick="removeXP(100)">Remover 100 XP</button>
+    <button onclick="resetXP()">Excluir Tudo</button>
+    <br>
+</div>
+
+<div class="container">
+    <ul id="achievements">
+        <li>Duolingo</li>
+        <li>Xadrez</li>
+        <li>Mimo</li>
+        <li>LarnU</li>
+        <li>AnkiPro</li>
+        <li>Vaia</li>
+        <li>Focus</li>
+        <li>DuoCards</li>
+        <li>Simpler</li>
+        <li>Reforça</li>
+    </ul>
+
+    <ul id="leaderboard">
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+        <li>100 XP</li>
+    </ul>
+</div>
+
+<div class="container">
+    <p>Meta: 10000</p>
+    <input type="range" id="xpRange" value="0" min="0" max="10000" oninput="updateRangeValue()">
+    <p id="xpRangeValue">0</p>
+</div>
+
+<script>
+function addXP(amount) {
+    var xpElement = document.getElementById("xp");
+    var currentXP = parseInt(xpElement.innerText);
+    var newXp = currentXP + amount;
+    xpElement.innerText = newXp;
+
+    var xpRange = document.getElementById("xpRange");
+    xpRange.value = parseInt(xpRange.value) + amount;
+    updateRangeValue();
+
+    localStorage.setItem("xp", newXp);
+    localStorage.setItem("xpRange", xpRange.value);
+}
+
+function removeXP(amount) {
+    var xpElement = document.getElementById("xp");
+    var currentXP = parseInt(xpElement.innerText);
+    var newXp = Math.max(currentXP - amount, 0);
+    xpElement.innerText = newXp;
+
+    var xpRange = document.getElementById("xpRange");
+    xpRange.value = Math.max(parseInt(xpRange.value) - amount, 0);
+    updateRangeValue();
+
+    localStorage.setItem("xp", newXp);
+    localStorage.setItem("xpRange", xpRange.value);
+}
+
+function resetXP() {
+    var xpElement = document.getElementById("xp");
+    xpElement.innerText = 0;
+
+    var xpRange = document.getElementById("xpRange");
+    xpRange.value = 0;
+    updateRangeValue();
+
+    localStorage.removeItem("xp");
+    localStorage.removeItem("xpRange");
+}
+
+function updateRangeValue() {
+    var xpRange = document.getElementById("xpRange");
+    var xpRangeValue = document.getElementById("xpRangeValue");
+    xpRangeValue.innerText = xpRange.value;
+}
+
+window.onload = function() {
+    var xpFromStorage = localStorage.getItem("xp");
+    var xpRangeFromStorage = localStorage.getItem("xpRange");
+    if (xpFromStorage !== null) {
+        document.getElementById("xp").innerText = xpFromStorage;
+    }
+    if (xpRangeFromStorage !== null) {
+        var xpRange = document.getElementById("xpRange");
+        xpRange.value = xpRangeFromStorage;
+        updateRangeValue();
+    }
+};
+</script>
+
+</body>
+</html>
